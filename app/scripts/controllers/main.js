@@ -1,13 +1,14 @@
-angular.module('puzzle', [])
-    .controller('NumberCtrl', ['$scope','$timeout', function($scope,$timeout) {
+'use strict';
 
+angular.module('angular15PuzzleGameApp')
+  .controller('MainCtrl', function ($scope, $interval) {
         $scope.size = 4;
         $scope.board = [];
         $scope.counter = 0;
 
         $scope.boardMax = function () {
             return $scope.size * $scope.size;
-        }
+        };
 
 
         $scope.init = function () {
@@ -16,7 +17,7 @@ angular.module('puzzle', [])
             for (var i = 0; i < $scope.boardMax(); i++) {
                 $scope.board.push({ value: i });
             }
-        }
+        };
 
 
         $scope.finished = function () {
@@ -26,16 +27,17 @@ angular.module('puzzle', [])
 
             var result = true;
             for (var i = 0; i <= $scope.boardMax() - 2; i++) {
-                if ($scope.board[i].value != i + 1) {
+                if ($scope.board[i].value !== i + 1) {
                     result = false;
                 }
             }
 
-            if(result)
+            if(result) {
                 $scope.stop();
+            }
 
             return result;
-        }
+        };
 
 
         $scope.randomize = function () {
@@ -46,21 +48,23 @@ angular.module('puzzle', [])
 
             arrayHelper.fisherYates($scope.board);
             $scope.stop();
-            myTimeout = $timeout($scope.onTimeout, 1000);
+            myInterval = $interval($scope.onInterval, 1000);
 
             checkPosition();
-        }
+        };
 
-        var myTimeout;
+        var myInterval;
         $scope.pieceClick = function (pos) {
             if (pos < $scope.boardMax() && pieceMovable(pos)) {
                 var zeroP = zeroPosition($scope.board);
                 $scope.board[zeroP].value = $scope.board[pos].value;
 
-                if ($scope.board[pos].value == zeroP + 1)
+                if ($scope.board[pos].value === zeroP + 1){
                     $scope.board[zeroP].color = 'rightPosition';
-                else
+                }
+                else {
                     $scope.board[zeroP].color = 'wrongPosition';
+                }
 
 
                 $scope.board[pos].value = 0;
@@ -68,12 +72,12 @@ angular.module('puzzle', [])
 
 
             }
-        }
+        };
 
 
         $scope.pieceEmpty = function (pos) {
-            return $scope.board[pos].value == 0;
-        }
+            return $scope.board[pos].value === 0;
+        };
 
 
         var zeroPosition = function (arr) {
@@ -82,7 +86,7 @@ angular.module('puzzle', [])
                     return pos;
                 }
             }
-        }
+        };
 
         var checkPosition = function () {
             for (var i = 0; i < $scope.boardMax(); i++) {
@@ -94,36 +98,35 @@ angular.module('puzzle', [])
             }
 
 
-        }
+        };
 
         var pieceMovable = function (pos) {
             return (((pos) % $scope.size) && pieceEmpty(pos - 1) ) ||
                 ((  (pos + 1) % $scope.size) && pieceEmpty(pos + 1) ) ||
                 pieceEmpty(arrayHelper.addRow($scope.size, pos, -1)) ||
                 pieceEmpty(arrayHelper.addRow($scope.size, pos, 1));
-        }
+        };
 
 
         var pieceEmpty = function (pos) {
             return (pos >= 0 &&
                 pos < $scope.boardMax() &&
                 $scope.board[pos].value === 0);
-        }
+        };
 
 
         $scope.initialized = function () {
-            return ($scope.board.length == $scope.size * $scope.size);
-        }
+            return ($scope.board.length === $scope.size * $scope.size);
+        };
 
-        $scope.onTimeout = function () {
+        $scope.onInterval = function () {
             $scope.counter++;
-            myTimeout = $timeout($scope.onTimeout, 1000);
-        }
+        };
 
 
         $scope.stop = function () {
-            $timeout.cancel(myTimeout);
-        }
+            $interval.cancel(myInterval);
+        };
 
         var arrayHelper = {
             addRow: function (arrSize, pos, count) {
@@ -131,7 +134,9 @@ angular.module('puzzle', [])
             },
             fisherYates: function (arr) {
                 var i = arr.length;
-                if (i == 0) return false;
+                if (i === 0) {
+                    return false;
+                }
                 while (--i) {
                     var j = Math.floor(Math.random() * ( i + 1 ));
                     var tempi = arr[i];
@@ -140,7 +145,5 @@ angular.module('puzzle', [])
                     arr[j] = tempi;
                 }
             }
-        }
-
-
-    }]);
+        };
+  });

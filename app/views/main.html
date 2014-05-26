@@ -1,0 +1,15 @@
+<div class="row board board-{{size}}" ng-init="randomize()">
+    <div ng-repeat="piece in board">
+        <div class="piece piece-number piece-number-{{piece.value}}" ng-click="pieceClick($index)" ng-class="piece.color" >
+            <span ng-hide="pieceEmpty($index)">{{piece.value}}</span></div>
+    </div>
+</div>
+
+<div class="row btn-group controls">
+    <button ng-click="randomize()" class="btn btn-danger">Reset</button>
+</div>
+
+<div class="row status-bar">
+    <div class="alert alert-info" ng-hide="finished()">Time: {{counter | number}} seconds</div>
+    <div class="alert alert-success" ng-show="finished()">Game Finished! in {{counter | number}} seconds!!!</div>
+</div>
